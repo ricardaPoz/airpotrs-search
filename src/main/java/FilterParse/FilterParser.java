@@ -5,6 +5,8 @@ import CSVReader.CSVRows;
 import Extension.TypeOf;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,11 +34,15 @@ public class FilterParser
     {
         if (this.tokens.length == 0)
         {
-            return csvRows.stream().collect(Collectors.toList());
+            return csvRows.stream()
+                    .sorted((o1, o2) -> o1.get(1).compareToIgnoreCase(o2.get(1)))
+                    .collect(Collectors.toList());
         }
 
         Node filterTree = parseExpression();
-        return evaluateNode(filterTree);
+        return evaluateNode(filterTree).stream()
+                .sorted((o1, o2) -> o1.get(1).compareToIgnoreCase(o2.get(1)))
+                .collect(Collectors.toList());
     }
 
     private Node parseExpression()
